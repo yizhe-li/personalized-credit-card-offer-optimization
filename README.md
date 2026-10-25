@@ -47,31 +47,4 @@ results are reproducible.
 - **Policy:** with LTV = $600 and $40 cost per status-matched offer,
   sending to **everyone loses money (ROI -17%)**; targeting the **top 20%
   by CATE yields ROI +104%**. The targeted group is 87% true persuadables.
-
-## The two interview questions this repo answers
-
-**"How did you compute the projected ROI gain?"**
-See `05_roi_simulation.py`. The model only *selects* the target group
-(top-k% by predicted CATE on a holdout). The lift inside that group is then
-measured from the holdout's *actual experimental outcomes* — so the
-projection is experimentally grounded, not the model grading its own
-homework. ROI = (LTV x incremental conversions - offer cost) / offer cost,
-compared against the untargeted send-to-all policy. The economics (LTV,
-cost) live in `config.py`; the quoted number should match your run.
-
-**"How did you validate the CATE estimates?"**
-Three ways (`04_cate_estimation.py`): (1) Qini/AUUC on a holdout vs a
-random-targeting baseline; (2) decile calibration — within each predicted-
-CATE decile, compare predicted effect to the decile's actual
-treatment-control gap; (3) because the data is synthetic, correlation with
-the known true tau (0.77).
-
-## Why DML on RCT data?
-
-Randomization identifies the *average* effect, but deciding **who** should
-get the expensive offer requires *individual-level* effects. CausalForestDML
-(econml) estimates CATE; on RCT data the propensity nuisance is trivially
-~0.5, and DML's cross-fitted outcome model partials out baseline conversion
-variation, sharpening the heterogeneity estimates. (The CausalML library's
-`UpliftRandomForestClassifier` / R-learner is an equivalent route; note
-causalml currently requires Python <= 3.11, while this repo uses econml.)
+  
